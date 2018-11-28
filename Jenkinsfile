@@ -71,27 +71,29 @@ pipeline {
 		stage("Deploy") {
 			steps {
 				script {
-					def terraform = new TerraformExecutor(this)
-					terraform.apply("service", [
-					  region: "us-east-1",
-					  resourcePrefix: "ae",
-					  type: "infra",
-					  name: "jenkins_linux_agent",
-					  version: version,
-					  image: "257540276112.dkr.ecr.us-east-1.amazonaws.com/ae/infra/jenkins/agent/linux:${commitHash}",
-					  credentials: [
-						ssh: "github-ssh-key"
-					  ]
-					])
+					/*
+                        def terraform = new TerraformExecutor(this)
+                        terraform.apply("service", [
+                          region: "us-east-1",
+                          resourcePrefix: "ae",
+                          type: "infra",
+                          name: "jenkins_linux_agent",
+                          version: version,
+                          image: "257540276112.dkr.ecr.us-east-1.amazonaws.com/ae/infra/jenkins/agent/linux:${commitHash}",
+                          credentials: [
+                            ssh: "github-ssh-key"
+                          ]
+                        ])
+					*/
 
-					def rtServer = Artifactory.server "test"
-					def rtDocker = Artifactory.docker server: rtServer
+					def artifactoryServer = Artifactory.server "my-onprem-artifactory"
+					def rtDocker = Artifactory.docker server: artifactoryServer
 					def buildInfo = Artifactory.newBuildInfo()
 					def dockerTag = "docker/ae/infra/jenkins/agent/linux:${commitHash}"
 
-					buildInfo = rtDocker.push(dockerTag, "docker", buildInfo)
+					buildInfo = artifactoryServer.push(dockerTag, "docker", buildInfo)
 					println "Docker Buildinfo"
-					rtServer.publishBuildInfo buildInfo
+					artifactoryServer.publishBuildInfo buildInfo
 				}
 			}
 		}
