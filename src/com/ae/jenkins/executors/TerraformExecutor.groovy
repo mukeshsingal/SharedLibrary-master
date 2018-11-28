@@ -7,7 +7,7 @@ class TerraformExecutor {
 
     TerraformExecutor(script) {
         this.script = script
-        this.isUnix = script.isUnix;
+        this.isUnix = script.isUnix()
     }
 
     def apply(String name, params) {

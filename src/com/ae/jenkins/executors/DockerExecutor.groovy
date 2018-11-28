@@ -9,7 +9,7 @@ class DockerExecutor {
  	DockerExecutor(script, params) {
      	this.script = script
    		this.params = params
-		this.isUnix = script.isUnix
+		this.isUnix = script.isUnix()
   	}
 
 	def init(String param) {

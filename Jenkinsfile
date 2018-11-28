@@ -22,7 +22,7 @@ pipeline {
 			steps {
 				script {
 					// global jenkins vars
-					shellCustom('env', this.isUnix)
+					shellCustom('env', isUnix())
 					def branch = env.BRANCH_NAME
 					def environment = env.ENVIRONMENT
 
