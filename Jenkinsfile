@@ -32,7 +32,7 @@ pipeline {
 
 					buildExecutor = new DockerExecutor(this, [
 						repo: "ae/infra/jenkins/agent/linux",
-						image: "257540276112.dkr.ecr.us-east-1.amazonaws.com/ae/infra/jenkins/agent/linux:${commitHash}",
+						image: "my-custom-image:${commitHash}",
 						region: "us-east-1",
 						registryAuthenticator: new AwsECRAuthenticator(this, "us-east-1"),
 						buildArgs: [
@@ -71,29 +71,17 @@ pipeline {
 		stage("Deploy") {
 			steps {
 				script {
-					/*
-                        def terraform = new TerraformExecutor(this)
-                        terraform.apply("service", [
-                          region: "us-east-1",
-                          resourcePrefix: "ae",
-                          type: "infra",
-                          name: "jenkins_linux_agent",
-                          version: version,
-                          image: "257540276112.dkr.ecr.us-east-1.amazonaws.com/ae/infra/jenkins/agent/linux:${commitHash}",
-                          credentials: [
-                            ssh: "github-ssh-key"
-                          ]
-                        ])
-					*/
+				    catchErrorCustom("Failed to initiate Artifactory and Docker") {
+					    def artifactoryServer = Artifactory.server "my-onprem-artifactory"
+					    def rtDocker = Artifactory.docker server: artifactoryServer
+					}
 
-					def artifactoryServer = Artifactory.server "my-onprem-artifactory"
-					def rtDocker = Artifactory.docker server: artifactoryServer
 					def buildInfo = Artifactory.newBuildInfo()
-					def dockerTag = "docker/ae/infra/jenkins/agent/linux:${commitHash}"
+					def dockerTag = "my-custom-image:${commitHash}"
 
-					buildInfo = artifactoryServer.push(dockerTag, "docker", buildInfo)
-					println "Docker Buildinfo"
-					artifactoryServer.publishBuildInfo buildInfo
+                    catchErrorCustom("Failed to push image to Artifactory", "Successfully uploaded image to Artifactory") {
+					    buildInfo = rtDocker.push(dockerTag, "docker")
+					}
 				}
 			}
 		}

@@ -19,9 +19,11 @@ class DockerExecutor {
 
 	def execute() {
 		def dockerTag = params.get("image")
-		def dockerRepo = params.get("repo")
-		script.echo "dockerRepo = $dockerRepo"
-		script.shellCustom("docker build -t $dockerRepo .", isUnix)
+		script.echo "dockerTag = $dockerTag"
+
+		script.catchErrorCustom("Failed to build docker image", "Successfully created docker image") {
+			script.shellCustom("docker build -t $dockerTag .", isUnix)
+		}
 	}
 
 	def push() {
