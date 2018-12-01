@@ -83,7 +83,7 @@ pipeline {
 					def dockerTag = "my-custom-image:${commitHash}"
 
                     catchErrorCustom("Failed to push image to Artifactory", "Successfully uploaded image to Artifactory") {
-					    buildInfo = rtDocker.push(dockerTag, "docker")
+					    buildInfo = rtDocker.push(dockerTag, "docker-repo")
 					}
 				}
 			}
