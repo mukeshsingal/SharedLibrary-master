@@ -33,7 +33,7 @@ pipeline {
 
 					buildExecutor = new DockerExecutor(this, [
 						repo: "ae/infra/jenkins/agent/linux",
-						image: "my-custom-image:${commitHash}",
+						image: "artifactory.aesansun.com/dockervirtualappcicdl/elytestappl:75832",
 						region: "us-east-1",
 						registryAuthenticator: new AwsECRAuthenticator(this, "us-east-1"),
 						buildArgs: [
@@ -76,11 +76,11 @@ pipeline {
                     def rtDocker
 				    catchErrorCustom("Failed to initiate Artifactory and Docker") {
 					     artifactoryServer = Artifactory.server "my-onprem-artifactory"
-					     rtDocker = Artifactory.docker server: artifactoryServer
+					     rtDocker = Artifactory.docker server: artifactoryServer, username: 'admin', password: 'password'
 					}
 
 					def buildInfo = Artifactory.newBuildInfo()
-					def dockerTag = "http://localhost:8081/artifactory/docker-repo/hello-world:latest"
+					def dockerTag = "artifactory.aesansun.com/dockervirtualappcicdl/elytestappl:75832"
 
                     catchErrorCustom("Failed to push image to Artifactory", "Successfully uploaded image to Artifactory") {
 					    buildInfo = rtDocker.push(dockerTag, "docker-repo")
