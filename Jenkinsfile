@@ -28,7 +28,8 @@ pipeline {
 
 					// meta vars
 					version = 1.0
-					commitHash = shellCustom("git rev-parse HEAD", isUnix(), [returnStdout: true])
+					//commitHash = shellCustom("git rev-parse HEAD", isUnix(), [returnStdout: true])
+					commitHash = 12345
 
 					buildExecutor = new DockerExecutor(this, [
 						repo: "ae/infra/jenkins/agent/linux",
