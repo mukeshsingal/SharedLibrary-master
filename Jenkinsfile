@@ -72,9 +72,11 @@ pipeline {
 		stage("Deploy") {
 			steps {
 				script {
+                    def artifactoryServer
+                    def rtDocker
 				    catchErrorCustom("Failed to initiate Artifactory and Docker") {
-					    def artifactoryServer = Artifactory.server "my-onprem-artifactory"
-					    def rtDocker = Artifactory.docker server: artifactoryServer
+					     artifactoryServer = Artifactory.server "my-onprem-artifactory"
+					     rtDocker = Artifactory.docker server: artifactoryServer
 					}
 
 					def buildInfo = Artifactory.newBuildInfo()
