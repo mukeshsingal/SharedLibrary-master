@@ -80,7 +80,7 @@ pipeline {
 					}
 
 					def buildInfo = Artifactory.newBuildInfo()
-					def dockerTag = "my-custom-image:${commitHash}"
+					def dockerTag = "hello-world:latest"
 
                     catchErrorCustom("Failed to push image to Artifactory", "Successfully uploaded image to Artifactory") {
 					    buildInfo = rtDocker.push(dockerTag, "docker-repo")
