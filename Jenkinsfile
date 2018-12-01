@@ -80,7 +80,7 @@ pipeline {
 					}
 
 					def buildInfo = Artifactory.newBuildInfo()
-					def dockerTag = "localhost:8081/artifactory/docker-repo/hello-world:latest"
+					def dockerTag = "http://localhost:8081/artifactory/docker-repo/hello-world:latest"
 
                     catchErrorCustom("Failed to push image to Artifactory", "Successfully uploaded image to Artifactory") {
 					    buildInfo = rtDocker.push(dockerTag, "docker-repo")
